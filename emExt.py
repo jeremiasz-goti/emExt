@@ -5,7 +5,7 @@ import re
 from collections import deque
 
 
-def firstLayer(url):
+def firstLayerScrape(url):
     urls = deque([])
     bad_urls = deque([])
     r = requests.get(url)
@@ -15,26 +15,29 @@ def firstLayer(url):
         if not str(link['href']).startswith('http'):
             link = str(url + link['href'])
             urls.append(link)
-        elif 'mailto:' or 'tel:' in str(link['href']):
+        elif str(link['href']).startswith('tel:'):
+            bad_urls.append
+        elif str(link['href']).startswith('mailto:'):
             bad_urls.append
         else:
             urls.append(link['href'])
+    print(urls)
     return urls
 
-def emExt(list):
+def extractEmails(list):
     for item in list:
         try:
             print(item)
-            # to nie dziala - bo funkcja niby robi item! ale nie znajduje maili a powinna
             print('item!')
             r = requests.get(item)
+            #regex nie dziala bo znajduje strony pierwszej warstwy ale nie znajduje maila mimo ze mail jest w footerze
             email = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
-            if re.fullmatch(email, r.text):
+            if re.match(email, r.text):
                 print('found')
         except InvalidURL:
             print('blad')
             pass
-
+    print(list)
             
 
-emExt(firstLayer('https://1stplace.pl'))
+extractEmails(firstLayerScrape('https://1stplace.pl'))
