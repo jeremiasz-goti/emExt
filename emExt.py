@@ -12,13 +12,13 @@ def firstLayerScrape(url):
     soup = BeautifulSoup(r.text, 'html.parser')
     links = soup.find_all('a')
     for link in links:
-        if not str(link['href']).startswith('http'):
-            link = str(url + link['href'])
-            urls.append(link)
-        elif str(link['href']).startswith('tel:'):
+        if str(link['href']).startswith('tel:'):
             bad_urls.append
         elif str(link['href']).startswith('mailto:'):
             bad_urls.append
+        elif not str(link['href']).startswith('http'):
+            link = str(url + link['href'])
+            urls.append(link)
         else:
             urls.append(link['href'])
     print(urls)
