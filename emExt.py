@@ -15,8 +15,6 @@ def firstLayerScrape(url):
         if str(link['href']).startswith('tel:'):
             bad_urls.append(link)
         elif str(link['href']).startswith('mailto:'):
-            # to dziala - printuje maila jak znajdzie odrazu np. w footerze
-            print(link['href'])
             bad_urls.append(link)
         elif not str(link['href']).startswith('http'):
             link = str(url + link['href'])
@@ -30,17 +28,17 @@ def firstLayerScrape(url):
 def extractEmails(list):
     for item in list:
         try:
-            print(item)
-            print('item!')
+            emails = deque([])
             r = requests.get(item)
             # trzeba poprawic regex bo u gory wszystko dziala
-            email = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
-            if re.match(email, r.text):
-                print('found')
+            email = re.findall(r'[\w.+-]+@[\w-]+\.[\w.-]+', r.text)
+            if len(email) > 0 :
+                for e in email:
+                    emails.append(e)
         except InvalidURL:
             print('blad')
             pass
-    print(list)
+    print(set(emails))
             
 
-extractEmails(firstLayerScrape('https://1stplace.pl'))
+extractEmails(firstLayerScrape('http://uszczelki-lubawka.pl'))
